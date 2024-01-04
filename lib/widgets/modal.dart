@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:expense_tracker/model/expense.dart';
 
 class Modal extends StatefulWidget{
-  const Modal({super.key});
+  final void Function(Expense expense) addNewExpense;
+
+  const Modal(this.addNewExpense,{super.key});
 
   @override
   State<Modal> createState() {
@@ -12,6 +15,45 @@ class Modal extends StatefulWidget{
 class _Modal extends State<Modal>{
   final _titleController = TextEditingController();
   final _amountController = TextEditingController();
+  DateTime? _selectedDate;
+  Category _selectedCategory = Category.study;
+
+  void showCalender() async{
+    final now = DateTime.now();
+    final DateTime oneYearAgo = now.subtract(const Duration(days: 365));
+    final pickedDate =  await showDatePicker(context: context, firstDate: oneYearAgo, lastDate: now);
+
+    setState(() {
+      _selectedDate = pickedDate;
+    });
+  }
+
+  void addExpense(){
+    final inputAmount = double.tryParse(_amountController.text);
+
+    bool inputAmountResult = inputAmount == null || inputAmount <= 0;
+
+    if(_titleController.text.trim().isEmpty || inputAmountResult || _selectedDate == null){
+      showDialog(context: context, builder: (ctx){
+        return AlertDialog( 
+          title: const Text("Invalid data entry"),
+          content: const Text("Please check whether the expense data entered was correct"),
+          actions: [ 
+            ElevatedButton(
+              onPressed: (){
+                Navigator.pop(ctx);
+              }, 
+              child: const Text("Close")
+              )
+          ],
+        );
+      });
+    }
+    else{
+      widget.addNewExpense(Expense(title: _titleController.text, amount: inputAmount, date: _selectedDate!, category: _selectedCategory));
+
+    }
+  }
 
   @override
   void dispose() {
@@ -25,7 +67,7 @@ class _Modal extends State<Modal>{
     return Padding( 
       padding: const EdgeInsets.all(20),
       child: Column( 
-        children: [ 
+        children: <Widget>[ 
           TextField(
             controller: _titleController, 
             maxLength: 25,
@@ -40,20 +82,36 @@ class _Modal extends State<Modal>{
               label: Text("Amount spent")
             ),
           ),
+          _selectedDate == null?const Text("Select the date"):Text(formater.format(_selectedDate!)),
+          IconButton(
+            onPressed: showCalender, 
+            icon: const Icon(Icons.calendar_month)
+          ),
+          DropdownButton(
+            value: _selectedCategory,
+            items: Category.values.map((category) => DropdownMenuItem( 
+              value: category,
+              child: Text(category.name.toUpperCase()) 
+            ) 
+          ).toList(), 
+            onChanged: (value){ 
+              if(value == null){return;}
+              setState(() {
+                _selectedCategory = value;
+              });
+            }
+          ),
           Row( 
             children: [ 
               ElevatedButton(
-                onPressed: (){
-                  print(_titleController.text);
-                  print(_amountController.text);
-                }, 
+                onPressed: addExpense, 
                 child: const Text("Save expense") 
                 ),
                 OutlinedButton(
                   onPressed: (){ 
                     Navigator.pop(context);
                   }, 
-                  child: const Text("Cancel") 
+                  child: const Text("Close") 
                   )
             ],
           ),

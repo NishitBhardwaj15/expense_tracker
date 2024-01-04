@@ -22,8 +22,14 @@ class _ExpensesState extends State<Expenses>{
 
    void _openModal(){
     showModalBottomSheet(context: context, builder: (ctx){
-      return const Modal();
+      return Modal(addNewExpense);
     });
+  }
+
+  void addNewExpense(Expense expense){
+   setState(() {
+     _allExpense.add(expense);
+   });
   }
 
   @override
