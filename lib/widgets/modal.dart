@@ -51,7 +51,7 @@ class _Modal extends State<Modal>{
     }
     else{
       widget.addNewExpense(Expense(title: _titleController.text, amount: inputAmount, date: _selectedDate!, category: _selectedCategory));
-
+      Navigator.pop(context);
     }
   }
 
@@ -65,7 +65,7 @@ class _Modal extends State<Modal>{
   @override
   Widget build(BuildContext context) {
     return Padding( 
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.fromLTRB(15, 30, 15, 15),
       child: Column( 
         children: <Widget>[ 
           TextField(
