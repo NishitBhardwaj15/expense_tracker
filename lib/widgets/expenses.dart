@@ -36,9 +36,35 @@ class _ExpensesState extends State<Expenses>{
   }
 
   void removeExpense(Expense expense){
+    final getIndex = _allExpense.indexOf(expense);
+
     setState(() {
       _allExpense.remove(expense);
     });
+    ScaffoldMessenger.of(context).clearSnackBars(); // to remove any exiting messages
+    ScaffoldMessenger.of(context).showSnackBar( 
+      SnackBar( 
+        duration: const Duration(seconds: 7),
+        content: const Text("Expense delete"),
+        action: SnackBarAction( 
+          label: "Undo", 
+          onPressed: (){
+            setState(() {
+              _allExpense.insert(getIndex, expense);
+            });
+          }
+          ),
+      )
+    );
+  }
+
+  Widget mainContent(){
+    if(_allExpense.isEmpty){
+      return const Center( 
+        child: Text("No expense to display"),
+      );
+    }
+    return ExpenseList(removeExpense,allExpense: _allExpense);
   }
 
   @override
@@ -56,7 +82,7 @@ class _ExpensesState extends State<Expenses>{
       body: Column(
         children: [ 
           Expanded(
-            child: ExpenseList(removeExpense,allExpense: _allExpense)
+            child: mainContent()
           )
         ],
       ),
