@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:expense_tracker/widgets/expenses.dart';
+import 'package:flutter/services.dart';
 
 void main() {
-  runApp(
+  WidgetsFlutterBinding.ensureInitialized;
+  SystemChrome.setPreferredOrientations( [ 
+    DeviceOrientation.portraitUp
+  ]).then((fn){
+    runApp(
     MaterialApp(
       theme: ThemeData(),
       darkTheme: ThemeData(),
@@ -10,6 +15,7 @@ void main() {
       home:const Expenses()
     )
   );
+  });
 }
 
 
