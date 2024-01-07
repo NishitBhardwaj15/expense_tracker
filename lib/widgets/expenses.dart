@@ -79,12 +79,18 @@ class _ExpensesState extends State<Expenses>{
           )
         ],
       ),
-      body: Column(
-        children: [ 
-          Expanded(
-            child: mainContent()
-          )
-        ],
+      body: Padding(
+        padding: const EdgeInsets.symmetric( 
+          horizontal: 10
+        ),
+        child: Column(
+          children: [ 
+            Expanded(
+              child: mainContent()
+              
+            )
+          ],
+        ),
       ),
     );
   }

@@ -3,8 +3,11 @@ import 'package:expense_tracker/widgets/expenses.dart';
 
 void main() {
   runApp(
-    const MaterialApp( 
-      home:Expenses()
+    MaterialApp(
+      theme: ThemeData(),
+      darkTheme: ThemeData(),
+      themeMode: ThemeMode.system,
+      home:const Expenses()
     )
   );
 }
